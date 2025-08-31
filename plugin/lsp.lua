@@ -136,7 +136,24 @@ vim.lsp.config['ts_ls'] = {
     },
 }
 
+-- Nix LSP (nil)
+vim.lsp.config['nil_ls'] = {
+    cmd = { 'nil' },
+    filetypes = { 'nix' },
+    root_markers = { 'flake.nix', 'default.nix', '.git' },
+    capabilities = caps,
+    settings = {
+        ['nil'] = {
+            formatting = {
+                command = { "nixpkgs-fmt" } -- or "alejandra" if you prefer
+            }
+        }
+    }
+}
+
+
 vim.lsp.enable('luals')
 vim.lsp.enable('cssls')
 vim.lsp.enable('ts_ls')
 vim.lsp.enable('phpls')
+vim.lsp.enable('nil_ls')
