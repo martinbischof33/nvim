@@ -32,8 +32,6 @@ vim.keymap.set("n", "<leader>j", "<cmd>lprev<CR>zz")
 -- getting Alex off my back :)
 vim.keymap.set("n", "<leader>dg", "<cmd>DogeGenerate<cr>")
 
--- lint / format php files for LC
-vim.keymap.set("n", "<leader>cc", "<cmd>!php-cs-fixer fix % --using-cache=no<cr>")
 
 -- Replace all instances of whatever is under cursor (on line)
 vim.keymap.set("n", "<leader>s", [[:s/\<<C-r><C-w>\>//gI<Left><Left><Left>]])
