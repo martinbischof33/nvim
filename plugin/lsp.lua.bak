@@ -107,19 +107,6 @@ vim.lsp.config['cssls'] = {
     },
 }
 
-vim.lsp.config['phpls'] = {
-    cmd = { 'intelephense', '--stdio' },
-    filetypes = { 'php' },
-    root_markers = { 'composer.json', '.git' },
-    capabilities = caps,
-    settings = {
-        intelephense = {
-            files = {
-                maxSize = 5000000, -- default 5MB
-            },
-        },
-    },
-}
 
 vim.lsp.config['ts_ls'] = {
     cmd = { 'typescript-language-server', '--stdio' },

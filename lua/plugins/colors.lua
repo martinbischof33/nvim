@@ -6,9 +6,9 @@ end
 
 return {
     {
-        "folke/tokyonight.nvim",
+        "loctvl842/monokai-pro.nvim",
         config = function()
-            vim.cmd.colorscheme "tokyonight"
+            vim.cmd.colorscheme "monokai-pro"
             vim.cmd('hi Directory guibg=NONE')
             vim.cmd('hi SignColumn guibg=NONE')
             enable_transparency()

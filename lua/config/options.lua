@@ -53,3 +53,6 @@ set.incsearch = true
 
 -- faster cursor hold
 set.updatetime = 50
+
+-- mouse enabled
+set.mouse = 'a'
