@@ -3,6 +3,7 @@ return {
     dependencies = {
         'williamboman/mason.nvim',
         'williamboman/mason-lspconfig.nvim',
+
         -- Autocompletion
         'hrsh7th/nvim-cmp',
         'hrsh7th/cmp-buffer',
@@ -10,9 +11,13 @@ return {
         'saadparwaiz1/cmp_luasnip',
         'hrsh7th/cmp-nvim-lsp',
         'hrsh7th/cmp-nvim-lua',
+
         -- Snippets
         'L3MON4D3/LuaSnip',
         'rafamadriz/friendly-snippets',
+
+        -- Formatter runner for Black + isort
+        'stevearc/conform.nvim',
     },
 
     config = function()
@@ -22,7 +27,7 @@ return {
         require('mason').setup({ PATH = 'prepend' })
 
         ---------------------------------------------------------------------------
-        -- Autoformat only for Lua (unchanged)
+        -- Autoformat only for Lua via LSP (unchanged)
         ---------------------------------------------------------------------------
         local autoformat_filetypes = { 'lua' }
         vim.api.nvim_create_autocmd('LspAttach', {
@@ -45,7 +50,7 @@ return {
         })
 
         ---------------------------------------------------------------------------
-        -- Borders for hover/signature + diagnostics UI (unchanged)
+        -- Borders for hover/signature + diagnostics UI
         ---------------------------------------------------------------------------
         vim.lsp.handlers['textDocument/hover'] =
             vim.lsp.with(vim.lsp.handlers.hover, { border = 'rounded' })
@@ -64,10 +69,10 @@ return {
                     [vim.diagnostic.severity.INFO]  = '»',
                 },
             },
-            underline = true, -- helps show unused as underlined if theme prefers
+            underline = true,
         })
 
-        -- Make "unused" diagnostics visibly faded in any colorscheme.
+        -- Make “unused” diagnostics visibly faded in any colorscheme
         vim.api.nvim_set_hl(0, 'DiagnosticUnnecessary', { link = 'Comment', default = true })
 
         ---------------------------------------------------------------------------
@@ -105,7 +110,12 @@ return {
         -- mason-lspconfig
         ---------------------------------------------------------------------------
         require('mason-lspconfig').setup({
-            ensure_installed = { 'lua_ls', 'ts_ls', 'eslint', 'pyright' },
+            ensure_installed = {
+                'lua_ls',
+                'ts_ls',
+                'eslint',
+                'pyright', -- Python IntelliSense
+            },
 
             handlers = {
                 -- default handler (skip the ones we configure below)
@@ -114,7 +124,7 @@ return {
                     lspconfig[server_name].setup({})
                 end,
 
-                -- Lua (fixed: correct server name)
+                -- Lua
                 lua_ls = function()
                     lspconfig.lua_ls.setup({
                         settings = {
@@ -128,15 +138,13 @@ return {
                     })
                 end,
 
-                -- PYTHON — Pyright with unused-import highlighting
+                -- Python: Pyright (completion, hover, go-to, semantic tokens)
                 pyright = function()
                     local util = require('lspconfig.util')
                     lspconfig.pyright.setup({
-                        -- make sure it anchors to your project
                         root_dir = util.root_pattern(
                             'pyproject.toml', 'setup.cfg', 'setup.py', 'requirements.txt', '.git'
                         ),
-                        -- start semantic tokens (VS Code-like colors); harmless if already on
                         on_attach = function(client, bufnr)
                             if client.server_capabilities.semanticTokensProvider then
                                 pcall(vim.lsp.semantic_tokens.start, bufnr, client.id)
@@ -152,7 +160,6 @@ return {
                                     useLibraryCodeForTypes = true,
                                     diagnosticMode = 'workspace',
                                     typeCheckingMode = 'basic',
-                                    -- <<< Ensure UNUSED IMPORTS/VARS are reported >>>
                                     diagnosticSeverityOverrides = {
                                         reportUnusedImport   = 'warning',
                                         reportUnusedVariable = 'warning',
@@ -218,6 +225,27 @@ return {
                     if luasnip.jumpable(-1) then luasnip.jump(-1) else fallback() end
                 end, { 'i', 's' }),
             }),
+        })
+
+        ---------------------------------------------------------------------------
+        -- Conform: Python = isort → black on save (NO Ruff)
+        ---------------------------------------------------------------------------
+        require('conform').setup({
+            formatters_by_ft = {
+                python = { 'isort', 'black' }, -- run isort first, then black
+            },
+            notify_on_error = false,
+        })
+
+        -- Format Python files on save with isort+black only
+        vim.api.nvim_create_autocmd('BufWritePre', {
+            pattern = '*.py',
+            callback = function(args)
+                require('conform').format({
+                    bufnr = args.buf,
+                    lsp_fallback = false, -- don't fall back to LSP; use isort+black only
+                })
+            end,
         })
     end,
 }
