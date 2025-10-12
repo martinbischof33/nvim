@@ -233,13 +233,14 @@ return {
         require('conform').setup({
             formatters_by_ft = {
                 python = { 'isort', 'black' }, -- run isort first, then black
+                rust   = { 'rustfmt' },
             },
             notify_on_error = false,
         })
 
         -- Format Python files on save with isort+black only
         vim.api.nvim_create_autocmd('BufWritePre', {
-            pattern = '*.py',
+            pattern = { '*.py', '*.rs' },
             callback = function(args)
                 require('conform').format({
                     bufnr = args.buf,
