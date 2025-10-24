@@ -115,6 +115,7 @@ return {
                 'ts_ls',
                 'eslint',
                 'pyright', -- Python IntelliSense
+                'taplo',   -- toml
             },
 
             handlers = {

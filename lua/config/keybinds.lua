@@ -59,3 +59,17 @@ vim.keymap.set("n", "<leader>li", ":checkhealth vim.lsp<CR>", { desc = "LSP Info
 vim.keymap.set("n", "<leader><leader>", function()
     vim.cmd("so")
 end)
+
+
+-- Split window shortcuts
+vim.keymap.set('n', '<leader>v', ':vsplit<CR>', { desc = 'Vertical split', silent = true })
+vim.keymap.set('n', '<leader>h', ':split<CR>', { desc = 'Horizontal split', silent = true })
+
+-- Optional: close current split
+vim.keymap.set('n', '<leader>q', ':close<CR>', { desc = 'Close split', silent = true })
+
+-- Optional: resize splits easily
+vim.keymap.set('n', '<C-Up>', ':resize +2<CR>', { silent = true })
+vim.keymap.set('n', '<C-Down>', ':resize -2<CR>', { silent = true })
+vim.keymap.set('n', '<C-Left>', ':vertical resize -2<CR>', { silent = true })
+vim.keymap.set('n', '<C-Right>', ':vertical resize +2<CR>', { silent = true })

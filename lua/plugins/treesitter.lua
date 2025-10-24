@@ -49,6 +49,7 @@ return {
                     "dockerfile",
                     "gitignore",
                     "astro",
+                    "toml",
                 },
                 -- auto install above language parsers
                 auto_install = false,
